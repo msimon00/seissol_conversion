@@ -23,6 +23,27 @@ def match_station_to_outputfile(stations, output_directory):
                 sys.exit()
     return matches
 
+def match_station_to_outputfile_by_coords(stations, output_file):
+    try:
+        f=open(output_file)
+    except:
+        msg= 'cant open %s' % output_file
+        raise IOError(msg)
+    f.readline()
+    f.readline()
+    f.close()
+    x=float(f.readline().split()[2])
+    y=float(f.readline().split()[2])
+    z=float(f.readline().split()[2])
+    r=np.sqrt(x**2+y**2+z**2)
+    lat=np.arcsin(z/r)*180/np.pi
+    lon=np.arctan(y/x)*180/np.pi
+    picks=[station for station in stations if str(round(station['latitude'],3)) in str(round(lat,3)) and str(round(station['longitude'],3)) in str(round(lon,3))]
+    if len(picks) == 0:
+        msg= 'could not identify station of pickpoint %s ' % output_file
+        raise Warning(msg)
+    return (picks[0], output_file)
+    
 def convert_seismograms(station={}, starttime=UTCDateTime(), output_file=''):
     st=Stream()
     try:
