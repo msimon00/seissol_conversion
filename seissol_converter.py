@@ -53,8 +53,8 @@ def convert_seismograms(station={}, starttime=UTCDateTime(), output_file=''):
     for j, channel in enumerate(['BHE','BHN','BHZ']):
         stats = {'network': station['network'], 'station': station['code'], \
         'location': station['location'],'latitude': station['latitude'], 'longitude':station['longitude'], 'channel':channel,\
-        'npts' : len(data[j]), 'sampling_rate': 1/timestep,'mseed':{'dataquality':'D'},\
-        'starttime' : starttime,'endtime':starttime+timestep*npts}
+        'npts' : len(data[j]), 'delta': timestep,\
+        'starttime' : starttime}
         outputdata=np.require(data[j],requirements=['C_CONTIGUOUS'])
         tr=Trace(data=outputdata, header=stats)
         st+=Stream(tr)
@@ -67,7 +67,7 @@ def convert_seismograms(station={}, starttime=UTCDateTime(), output_file=''):
 stations=["tests_data/dataless.seed.BW_FURT", "tests_data/dataless.seed.BW_RJOB"]
 output_directory='seissol_out'
 
-match=match_station_to_outputfile(stations, output_directory')
+match=match_station_to_outputfile(stations, output_directory)
 
 #warning, elements of 'stations' do not yes meet requirements for conversion?
 
